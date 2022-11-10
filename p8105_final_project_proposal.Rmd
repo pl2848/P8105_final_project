@@ -6,7 +6,15 @@ output: github_document
 ---
 
 # P8105_final_project_proposal
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
+## The group members (names and UNIs):
+- Wenjun Mo (wm2473)
+- Keming Zhan (kz2383)
+- Pei Liu (pl2848)
+- Shuting Kang ()
+
+## The tentative project title
+**Children Care vs. Violation in NYC**
+ 
+## The motivation for this project
 
