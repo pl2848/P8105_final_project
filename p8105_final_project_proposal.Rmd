@@ -1,0 +1,12 @@
+---
+title: "p8105_final_project_proposal"
+author: "Pei Liu"
+date: "2022-11-10"
+output: github_document
+---
+
+# P8105_final_project_proposal
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
