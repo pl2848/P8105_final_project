@@ -18,14 +18,14 @@ output: github_document
 ## The motivation for this project
 - To investigate the violation in each Children Center in NYC.
 
-# The intended final products
+## The intended final products
 - A webpage with index page, statistical analysis, visualization, report etc.
 - A screencast that introduce our project
 - A clean data including the center name, zip code, average violation rate, average total educational workers
 - A map represent violation rate in each borough in NYC
 Several plotly plots that display average critical violation rate interactively based on geographic factor and children centers
 
-# The anticipated data sources
+## The anticipated data sources
 **NYC Open Data**
 https://data.cityofnewyork.us/Health/DOHMH-Childcare-Center-Inspections/dsg6-ifza
 
