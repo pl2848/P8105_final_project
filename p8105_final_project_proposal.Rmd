@@ -31,7 +31,7 @@ https://data.cityofnewyork.us/Health/DOHMH-Childcare-Center-Inspections/dsg6-ifz
 
 
 ## The planned analyses / visualizations / coding challenges
-- filter the variables (only investigate the current permitted Children Care Center)
+- filter the variables to include currently permitted Children Care Center
 - Visualize the relationship between each indicator and violation measure. 
 Coding Challenge: 
 - Explanatory data analysis, generate a more lucid version through classifying based on multiple factors, for instance geographic factor and children center 
