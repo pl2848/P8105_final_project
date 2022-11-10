@@ -1,6 +1,6 @@
 ---
 title: "p8105_final_project_proposal"
-author: "Pei Liu"
+author: "All group members"
 date: "2022-11-10"
 output: github_document
 ---
@@ -10,7 +10,7 @@ output: github_document
 - Wenjun Mo (wm2473)
 - Keming Zhan (kz2383)
 - Pei Liu (pl2848)
-- Shuting Kang ()
+- Shuting Kang (sk5152)
 
 ## The tentative project title
 **Children Care vs. Violation in NYC**

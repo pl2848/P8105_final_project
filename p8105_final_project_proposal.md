@@ -1,6 +1,6 @@
 p8105_final_project_proposal
 ================
-Pei Liu
+All group members
 2022-11-10
 
 ## The group members (names and UNIs):
@@ -8,7 +8,7 @@ Pei Liu
 -   Wenjun Mo (wm2473)
 -   Keming Zhan (kz2383)
 -   Pei Liu (pl2848)
--   Shuting Kang ()
+-   Shuting Kang (sk5152)
 
 ## The tentative project title
 
