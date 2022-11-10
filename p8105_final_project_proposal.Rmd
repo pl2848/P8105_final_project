@@ -5,7 +5,6 @@ date: "2022-11-10"
 output: github_document
 ---
 
-# P8105_final_project_proposal
 
 ## The group members (names and UNIs):
 - Wenjun Mo (wm2473)
