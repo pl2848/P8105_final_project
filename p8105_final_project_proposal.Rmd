@@ -12,7 +12,6 @@ output: github_document
 - Keming Zhan (kz2383)
 - Pei Liu (pl2848)
 - Shuting Kang ()
-- bgg
 
 ## The tentative project title
 **Children Care vs. Violation in NYC**
