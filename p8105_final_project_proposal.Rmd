@@ -39,9 +39,14 @@ Coding Challenge:
 
 ## The planned timeline
 11.15 - 11.18: project review meeting 
+
 11.18 - 11.30: Statistical analysis, EDA and visulazation
+
 12.1 - 12.5: website
+
 12.5 - 12.10: screencast
+
 12.10: final report,webpage and screencast 
+
 12.10 final report deadline (webpage&screen cast)
 
