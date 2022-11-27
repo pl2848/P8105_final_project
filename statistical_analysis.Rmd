@@ -1,0 +1,14 @@
+---
+title: "statistical_analysis"
+author: "Shuting Kang"
+date: "2022-11-27"
+output: html_document
+---
+
+This markdown file is use for project statistical analysis 
+
+step1: input dataset from 
+```{r }
+
+```
+
