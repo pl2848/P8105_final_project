@@ -93,20 +93,84 @@ plot_1.1.1_1<-
 plot_1.1.1_1  
 ```
 ```{r}
-plot_1.1.1_1<-
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+plot_1.1.1_violin<-
   Childcare_center%>%
   group_by(borough)%>%
-  select(borough,violation_rate_percent,public_health_hazard_violation_rate,critical_violation_rate)%>%
-  pivot_longer(
-    violation_rate_percent:critical_violation_rate,
-    names_to="observation",
-    values_to = "value"
-  )%>%
-  ggplot(aes(x=value,fill=observation))+
-  geom_density(alpha=.5)+
-  facet_grid(~borough)+
-  viridis::scale_fill_viridis(discrete = TRUE)
-plot_1.1.1_1  
+  select(borough,violation_rate_percent)%>%
+  ggplot(aes(x=borough,y=violation_rate_percent))+
+  geom_violin(aes(fill = borough), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
+plot_1.1.1_violin 
+
+plot_1.1.1_boxplot<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  select(borough,violation_rate_percent)%>%
+  ggplot(aes(x=borough,y=violation_rate_percent))+
+  geom_boxplot(aes(fill = borough), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
+plot_1.1.1_boxplot
+
+
+plot_1.1.1_violin2<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  select(borough,public_health_hazard_violation_rate)%>%
+  ggplot(aes(x=borough,y=public_health_hazard_violation_rate))+
+  geom_violin(aes(fill = borough), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
+plot_1.1.1_violin2
+
+plot_1.1.1_boxplot2<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  select(borough,public_health_hazard_violation_rate)%>%
+  ggplot(aes(x=borough,y=public_health_hazard_violation_rate))+
+  geom_boxplot(aes(fill = borough), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
+plot_1.1.1_boxplot2
+
+plot_1.1.1_violin3<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  select(borough,critical_violation_rate)%>%
+  ggplot(aes(x=borough,y=critical_violation_rate))+
+  geom_violin(aes(fill = borough), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
+plot_1.1.1_violin3
+
+plot_1.1.1_boxplot3<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  select(borough,critical_violation_rate)%>%
+  ggplot(aes(x=borough,y=critical_violation_rate))+
+  geom_boxplot(aes(fill = borough), color = "blue", alpha = .5) + 
+  theme(legend.position = "bottom")
+plot_1.1.1_boxplot3
+
+```
+
+```{r}
+library(patchwork)
+(plot_1.1.1_violin+plot_1.1.1_violin2+plot_1.1.1_violin3)/(plot_1.1.1_boxplot+plot_1.1.1_boxplot2+plot_1.1.1_boxplot3)
+```
+
 ```
 
 ```{r}
