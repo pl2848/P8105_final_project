@@ -7,8 +7,141 @@ output: html_document
 
 This markdown file is use for project statistical analysis 
 
-step1: input dataset from 
+step1: input dataset DOHMH Childcare Center Inspections (Updated from november 25,2022) from NYC OpenData 
 ```{r }
-
+library(tidyverse)
+library(ggridges)
+raw_data<-read_csv(file="./data/DOHMH_Childcare_Center_Inspections .csv")
 ```
 
+# Part I: data cleaning 
+
+filter the variables to include currently permitted Children Care Center
+Question: should we consider permitted (17356) or permitted+ active (3399)(school)
+
+step1:filter the inspection record for only currently permitted Children Care Center
+step2:remove the useless variables: legal_name, building, street, phone, permit_number, permid_expiration, day care id, url, date_permitted, actual.
+(some of them might be helpful in plotly percedure)
+
+```{r}
+Childcare_center<-
+  raw_data%>%
+  janitor::clean_names() %>%
+  filter(status=="Permitted")%>%
+  select(-legal_name,-building,-street,-phone,-permit_number,-permit_expiration,
+         -day_care_id,-url,-date_permitted,-actual)%>%
+  drop_na(violation_rate_percent)%>% ## change from 17356 to 15910
+  drop_na(public_health_hazard_violation_rate)## actually no change
+Childcare_center
+```
+
+
+```{r}
+skimr::skim(Childcare_center)
+```
+categorical variables: 
+center name: 1306 we can divided into five parts based on their borough 
+borough: 5
+age range:3
+program type: 4
+facility type:2
+child care type:3
+violation category: 3
+health code sub section:264???
+## violation status: 3
+inspection summary result: 28
+
+numerical variables:
+maximum capacity
+total education workers
+## violation rate percent
+## public health hazard violation rate
+## critical violation rate
+
+target variables:
+violation rate percent (numerical)
+public health hazard violation rate (numerical)
+critical violation rate (numerical)
+violation status (categorical) 
+
+! Attention:
+Average Violation rate percent: based on child care type (only three values)
+Average Total Educational Workers: based on the program type (only four values)
+Average Public Health Hazard Violation Rate: based on child care type (only three values)
+Average Critical Violation Rate: based on child care type (only three values)
+
+So, we should not use these averaged value...
+
+# Part II: EDA
+## Bivariate visualization 
+
+1. borough(5) 
+1.1 plots
+1.1.1 borough versus violation rate percent & public health hazard violation rate & critical violation rate
+```{r}
+plot_1.1.1_1<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  select(borough,violation_rate_percent,public_health_hazard_violation_rate,critical_violation_rate)%>%
+  pivot_longer(
+    violation_rate_percent:critical_violation_rate,
+    names_to="observation",
+    values_to = "value"
+  )%>%
+  ggplot(aes(x=borough,y=value,color=observation))+
+  geom_boxplot()
+plot_1.1.1_1  
+```
+```{r}
+plot_1.1.1_1<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  select(borough,violation_rate_percent,public_health_hazard_violation_rate,critical_violation_rate)%>%
+  pivot_longer(
+    violation_rate_percent:critical_violation_rate,
+    names_to="observation",
+    values_to = "value"
+  )%>%
+  ggplot(aes(x=value,fill=observation))+
+  geom_density(alpha=.5)+
+  facet_grid(~borough)+
+  viridis::scale_fill_viridis(discrete = TRUE)
+plot_1.1.1_1  
+```
+
+```{r}
+
+plot_1.1.1<-
+  Childcare_center%>%
+  group_by(borough)%>%
+  summarise(ave_vrp=mean(violation_rate_percent),
+         ave_phhvr=mean(public_health_hazard_violation_rate),
+         ave_cvr=mean(critical_violation_rate))%>%
+  pivot_longer(
+    ave_vrp:ave_cvr,
+    names_to="observation",
+    values_to = "value"
+  )%>%
+  ggplot(aes(x=borough,y=value,color=observation))+
+  geom_point()
+plot_1.1.1
+```
+1.1.2 borough versus violation status 
+
+
+1.2 analysis output
+The target output will significantly influenced by borough
+
+
+
+
+age range:3
+program type: 4
+facility type:2
+child care type:3
+violation category: 3
+health code sub section:264
+inspection summary result: 28
+```{r}
+
+```
