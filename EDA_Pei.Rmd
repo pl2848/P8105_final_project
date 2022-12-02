@@ -1,0 +1,140 @@
+---
+title: "Statistical_analysis_Pei"
+author: "Pei Liu"
+date: "2022-11-29"
+output: html_document
+---
+
+
+```{r}
+library(viridis)
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+```
+
+
+```{r}
+library(tidyverse)
+library(ggridges)
+library(dplyr)
+raw_data<-read_csv(file="./data/DOHMH_Childcare_Center_Inspections .csv")
+```
+
+
+# Part I: data cleaning 
+
+filter the variables to include currently permitted Children Care Center
+Question: should we consider permitted (17356) or permitted+ active (3399)(school)
+
+step1:filter the inspection record for only currently permitted Children Care Center
+step2:remove the useless variables: legal_name, building, street, phone, permit_number, permid_expiration, day care id, url, date_permitted, actual.
+(some of them might be helpful in plotly percedure)
+
+```{r}
+Childcare_center<-
+  raw_data%>%
+  janitor::clean_names() %>%
+  filter(status=="Permitted")%>%
+  select(-legal_name,-building,-street,-phone,-permit_number,-permit_expiration,
+         -day_care_id,-url,-date_permitted,-actual)%>%
+  drop_na(violation_rate_percent)%>% ## change from 17356 to 15910
+  drop_na(public_health_hazard_violation_rate) %>% ## actually no change
+  filter(age_range != "0 YEARS - 16 YEARS")
+Childcare_center
+```
+
+
+
+
+Frequency of Violation Category for Each center
+```{r}
+Childcare_center %>% 
+  group_by(violation_category, center_name) %>% 
+  summarise(count = n()) %>% 
+  knitr::kable()
+```
+There are 1197 permitted center in NYC now.
+```{r}
+length(unique(Childcare_center$center_name))
+```
+
+The relationship between Violation Category and Maximum capacity:
+```{r}
+Childcare_center %>% 
+  group_by(violation_category, maximum_capacity) %>% 
+  #summarise(count = n(), mean = mean()) %>% 
+  ggplot(aes(x = violation_category, y = maximum_capacity)) +
+  geom_violin(aes(fill = violation_category), 
+              color = "blue", 
+              alpha = .5) +
+  theme(legend.position = "bottom") 
+
+Childcare_center %>% 
+  group_by(violation_category, maximum_capacity) %>% 
+  #summarise(count = n(), mean = mean()) %>% 
+  ggplot(aes(x = violation_category, y = maximum_capacity, color = violation_category)) +
+  geom_boxplot() +
+  theme(legend.position = "bottom") 
+```
+```{r}
+
+Childcare_center %>% 
+  group_by(violation_category, total_educational_workers) %>% 
+  #summarise(count = n(), mean = mean()) %>% 
+  ggplot(aes(x = violation_category, y = total_educational_workers)) +
+  geom_violin(aes(fill = violation_category), 
+              color = "blue", 
+              alpha = .5) +
+  theme(legend.position = "bottom") 
+
+Childcare_center %>% 
+  group_by(violation_category, total_educational_workers) %>% 
+  #summarise(count = n(), mean = mean()) %>% 
+  ggplot(aes(x = violation_category, y = total_educational_workers, color = violation_category)) +
+  geom_boxplot() +
+  theme(legend.position = "bottom") 
+
+```
+```
+
+
+
+Top 10 regulation summaries in NYC
+```{r}
+Childcare_center %>% 
+  group_by(regulation_summary) %>% 
+  summarise(number = n()) %>% 
+  arrange(desc(number)) %>% 
+  top_n(11)
+```
+
+
+
+
+
+
+
+```{r}
+Childcare_center %>% 
+  ggplot(aes(x = total_educational_workers, y = violation_rate_percent)) +
+  geom_point()
+```
+
+
+
+1. Overview of Childcare Center in NYC
+1.1 Frequency of Child care center by borough
+1.2 Frequency of Program Type (Age range) for the whole city and by borough
+1.3 Total educational workers and Maximum Capacity (average worker per child) in NYC and by borough
+
+2. Violation Analysis
+2.1 Borough versus violation category
+2.2 Top 10 regulation summary in each borough
+2.3 Program type vs violation category
+
+Kristin: Borough
+Wenjun: AGe group
+Emma: Top 10 regulation summary in each borough, Total educational workers and Maximum Capacity
+Keming: Program Type 
