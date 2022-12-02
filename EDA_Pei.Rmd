@@ -12,27 +12,17 @@ options(
   ggplot2.continuous.colour = "viridis",
   ggplot2.continuous.fill = "viridis"
 )
-```
-
-
-```{r}
 library(tidyverse)
 library(ggridges)
 library(dplyr)
 library(plotly)
-
-raw_data<-read_csv(file="./data/DOHMH_Childcare_Center_Inspections .csv")
 ```
 
 
-# Part I: data cleaning 
+```{r}
+raw_data<-read_csv(file="./data/DOHMH_Childcare_Center_Inspections .csv")
+```
 
-filter the variables to include currently permitted Children Care Center
-Question: should we consider permitted (17356) or permitted+ active (3399)(school)
-
-step1:filter the inspection record for only currently permitted Children Care Center
-step2:remove the useless variables: legal_name, building, street, phone, permit_number, permid_expiration, day care id, url, date_permitted, actual.
-(some of them might be helpful in plotly percedure)
 
 ```{r}
 Childcare_center<-
@@ -49,18 +39,15 @@ Childcare_center
 
 
 
-
-Frequency of Violation Category for Each center
+??
+# Frequency of Violation Category for Each center
 ```{r}
 Childcare_center %>% 
   group_by(violation_category, center_name) %>% 
   summarise(count = n()) %>% 
   knitr::kable()
 ```
-There are 1197 permitted center in NYC now.
-```{r}
-length(unique(Childcare_center$center_name))
-```
+
 
 
 # The relationship between maximum capacity and child care type
@@ -91,6 +78,11 @@ boxplot_capacity = Childcare_center %>%
   group_by(violation_category, maximum_capacity, child_care_type) %>% 
   ggplot(aes(x = violation_category, y = maximum_capacity, color = child_care_type)) +
   geom_boxplot() +
+  labs(
+    x = "Violation category",
+    y = "Maximum capacity",
+    color = ""
+  ) +
   theme(legend.position = "bottom") 
 boxplot_capacity
 ```
@@ -104,7 +96,7 @@ We can see from the frequency bar chart that pre schools with larger maximum cap
 
 **(2). Infants/Toddlers**
 
-The frequency of violation is also higher in Infants/Toddlers with larger maximum capacity; and the frequency of no violation is higher in Infants/Toddlers with smaller maximum capacity.
+The frequency of violation is higher in Infants/Toddlers with larger maximum capacity; and the frequency of no violation is higher in Infants/Toddlers with smaller maximum capacity.
 ```{r}
 library(patchwork)
 
@@ -145,9 +137,8 @@ bar_max_cap2 = Childcare_center %>%
 bar_max_cap1 + bar_max_cap2
 ```
 
-
 # The relationship between total educational workers and violation category
-
+As we can see, there's no significant difference between the distribution of total education workers in each violation categories.
 ```{r}
 Childcare_center %>% 
   group_by(violation_category, total_educational_workers, child_care_type) %>% 
@@ -157,8 +148,8 @@ Childcare_center %>%
               color = "blue", 
               alpha = .5) +
   labs(
-    x = "Total educational workers",
-    y = "Frequency",
+    x = "Violation category",
+    y = "Total educational workers",
     color = ""
   ) +
   theme(legend.position = "bottom") 
@@ -169,8 +160,8 @@ boxplot_worker = Childcare_center %>%
   ggplot(aes(x = violation_category, y = total_educational_workers, color = child_care_type)) +
   geom_boxplot() +
   labs(
-    x = "Total educational workers",
-    y = "Frequency",
+    x = "Violation category",
+    y = "Total educational workers",
     color = ""
   ) +
   theme(legend.position = "bottom") 
@@ -178,7 +169,16 @@ boxplot_worker = Childcare_center %>%
 boxplot_worker
 
 ```
-
+# The relationship between total educational worker, maximum capacity and child care type
+As we can see, there's no significant different within each child care type. But the educational workers per child is higher in Infants/Toddlers than it is in Pre school.
+```{r}
+plotly_capacity_type = Childcare_center %>% 
+  mutate(workers_per_child = total_educational_workers/maximum_capacity) %>% 
+  group_by(workers_per_child, violation_category, child_care_type) %>% 
+  plot_ly(y = ~workers_per_child, type = "box", x = ~violation_category, color = ~child_care_type,colors = "viridis") %>% 
+  layout(boxmode = "group")
+plotly_capacity_type
+```
 
 # Top 10 regulation summaries of childcare center inspection
 ```{r}
