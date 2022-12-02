@@ -101,8 +101,14 @@ To further analyze the association, we set maximum capacity less than its median
 **(1). Pre School**
 
 We can see from the frequency bar chart that pre schools with larger maximum capacity are more likely to violate related rules: the frequecnies are higher in all violation categories. In contract, pre schools with smaller maximum capacity have more chance of no violation.
+
+**(2). Infants/Toddlers**
+
+The frequency of violation is also higher in Infants/Toddlers with larger maximum capacity; and the frequency of no violation is higher in Infants/Toddlers with smaller maximum capacity.
 ```{r}
-Childcare_center %>% 
+library(patchwork)
+
+bar_max_cap1 = Childcare_center %>% 
   mutate(violation_category = ifelse( is.na(violation_category), "NO VIOLATION", violation_category),
          maximum_capacity_group = ifelse(maximum_capacity<66, "small", "large")) %>%
   filter(child_care_type == "Child Care - Pre School") %>% 
@@ -111,13 +117,15 @@ Childcare_center %>%
   ggplot(aes(x = violation_category, y = count, fill = maximum_capacity_group)) +
   geom_bar(stat="identity", position=position_dodge()) +
   geom_text(aes(label=count), vjust=1.6, color="white",
-            position = position_dodge(0.9), size=3.5)
-```
-**(2). Infants/Toddlers**
+            position = position_dodge(0.9), size=3.5)+
+  labs(
+    x = "Violation Category",
+    y = "Frequency",
+    fill = "Group"
+  ) +
+  theme(legend.position = "bottom") 
 
-The frequency of violation is also higher in Infants/Toddlers with larger maximum capacity; and the frequency of no violation is higher in Infants/Toddlers with smaller maximum capacity.
-```{r}
-Childcare_center %>% 
+bar_max_cap2 = Childcare_center %>% 
   mutate(violation_category = ifelse( is.na(violation_category), "NO VIOLATION", violation_category),
          maximum_capacity_group = ifelse(maximum_capacity<26, "small", "large")) %>%
   filter(child_care_type == "Child Care - Infants/Toddlers") %>% 
@@ -126,71 +134,70 @@ Childcare_center %>%
   ggplot(aes(x = violation_category, y = count, fill = maximum_capacity_group)) +
   geom_bar(stat="identity", position=position_dodge()) +
   geom_text(aes(label=count), vjust=1.6, color="white",
-            position = position_dodge(0.9), size=3.5)
+            position = position_dodge(0.9), size=3.5)+
+  labs(
+    x = "Violation Category",
+    y = "Frequency",
+    fill = "Group"
+  ) +
+  theme(legend.position = "bottom") 
+
+bar_max_cap1 + bar_max_cap2
 ```
 
 
-
-
-
-
+# The relationship between total educational workers and violation category
 
 ```{r}
 Childcare_center %>% 
-  group_by(violation_category, total_educational_workers) %>% 
-  #summarise(count = n(), mean = mean()) %>% 
+  group_by(violation_category, total_educational_workers, child_care_type) %>% 
+  mutate(violation_category = ifelse( is.na(violation_category), "NO VIOLATION", violation_category)) %>%
   ggplot(aes(x = violation_category, y = total_educational_workers)) +
-  geom_violin(aes(fill = violation_category), 
+  geom_violin(aes(fill = child_care_type), 
               color = "blue", 
               alpha = .5) +
+  labs(
+    x = "Total educational workers",
+    y = "Frequency",
+    color = ""
+  ) +
   theme(legend.position = "bottom") 
 
-Childcare_center %>% 
-  group_by(violation_category, total_educational_workers) %>% 
-  #summarise(count = n(), mean = mean()) %>% 
-  ggplot(aes(x = violation_category, y = total_educational_workers, color = violation_category)) +
+boxplot_worker = Childcare_center %>% 
+  group_by(violation_category, total_educational_workers, child_care_type) %>% 
+  mutate(violation_category = ifelse( is.na(violation_category), "NO VIOLATION", violation_category)) %>%
+  ggplot(aes(x = violation_category, y = total_educational_workers, color = child_care_type)) +
   geom_boxplot() +
+  labs(
+    x = "Total educational workers",
+    y = "Frequency",
+    color = ""
+  ) +
   theme(legend.position = "bottom") 
+
+boxplot_worker
 
 ```
 
 
-Top 10 regulation summaries in NYC
+# Top 10 regulation summaries of childcare center inspection
 ```{r}
 Childcare_center %>% 
   group_by(regulation_summary) %>% 
-  summarise(number = n()) %>% 
-  arrange(desc(number)) %>% 
-  top_n(11) %>% 
-  ggplot(aes(x = number, y = regulation_summary)) %>% 
-  geom_histogram(stat = "identity")
+  summarise(Frquency = n()) %>% 
+  arrange(desc(Frquency)) %>% 
+  top_n(10) %>% 
+  knitr::kable()
 ```
 
-
-
-
-
-
-
+# Top 10 inspection summaries result of childcare center inspection
 ```{r}
 Childcare_center %>% 
-  ggplot(aes(x = total_educational_workers, y = violation_rate_percent)) +
-  geom_point()
+  drop_na() %>% 
+  group_by(inspection_summary_result) %>% 
+  summarise(Frquency = n()) %>% 
+  arrange(desc(Frquency)) %>% 
+  top_n(10) %>% 
+  knitr::kable()
 ```
 
-
-
-1. Overview of Childcare Center in NYC
-1.1 Frequency of Child care center by borough
-1.2 Frequency of Program Type (Age range) for the whole city and by borough
-1.3 Total educational workers and Maximum Capacity (average worker per child) in NYC and by borough
-
-2. Violation Analysis
-2.1 Borough versus violation category
-2.2 Top 10 regulation summary in each borough
-2.3 Program type vs violation category
-
-Kristin: Borough
-Wenjun: AGe group
-Emma: Top 10 regulation summary in each borough, Total educational workers and Maximum Capacity
-Keming: Program Type 
